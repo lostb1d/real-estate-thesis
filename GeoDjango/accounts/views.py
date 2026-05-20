@@ -4,6 +4,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from .pagination import SuperAdminPagination
 
 
 from .models import User, Role, Permission, RolePermission, UserRole
@@ -243,6 +244,9 @@ class SuperAdminDashboardAPIView(APIView):
         return Response({
             "total_users": User.objects.count(),
             "active_users": User.objects.filter(is_active=True).count(),
+            "total_agencies": Agency.objects.count(),
+            "verified_agencies": Agency.objects.filter(is_verified=True).count(),
+            "agency_employees": AgencyEmployee.objects.count(),
             "roles": Role.objects.count(),
             "permissions": Permission.objects.count(),
             "total_properties": Property.objects.count(),
@@ -250,3 +254,30 @@ class SuperAdminDashboardAPIView(APIView):
             "approved_properties": Property.objects.filter(status="approved").count(),
             "gis_layers": SpatialLayer.objects.count(),
         })
+
+from rest_framework import viewsets, permissions, filters
+from django.contrib.auth import get_user_model
+
+from .serializers import UserListSerializer
+
+User = get_user_model()
+
+
+class SuperAdminUserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserListSerializer
+    permission_classes = [permissions.IsAdminUser]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["username", "email", "phone"]
+
+    def get_queryset(self):
+        return User.objects.all().order_by("-id")
+
+class SuperAdminUserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserListSerializer
+    permission_classes = [permissions.IsAdminUser]
+    pagination_class = SuperAdminPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["username", "email", "phone"]
+
+    def get_queryset(self):
+        return User.objects.all().order_by("-id")

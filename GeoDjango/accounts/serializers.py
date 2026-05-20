@@ -376,3 +376,28 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         return attrs
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    role_names = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "is_active",
+            "is_verified",
+            "is_staff",
+            "is_superuser",
+            "role_names",
+        )
+
+    def get_role_names(self, obj):
+        if hasattr(obj, "user_roles"):
+            return [ur.role.name for ur in obj.user_roles.filter(is_active=True)]
+        return []

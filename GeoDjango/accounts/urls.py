@@ -15,6 +15,8 @@ from .views import (
     ChangePasswordAPIView,
     AgencyViewSet,
     AgencyEmployeeViewSet,
+    SuperAdminUserViewSet,
+    SuperAdminDashboardAPIView,
 )
 
 router = DefaultRouter()
@@ -24,6 +26,11 @@ router = DefaultRouter()
 # router.register("user-roles", UserRoleViewSet)
 router.register("agencies", AgencyViewSet, basename="agencies")
 router.register("agency-employees", AgencyEmployeeViewSet, basename="agency-employees")
+router.register(
+    "superadmin/users",
+    SuperAdminUserViewSet,
+    basename="superadmin-users"
+)
 urlpatterns = [
     path("", include(router.urls)),
     path("register/", RegisterAPIView.as_view()),
@@ -33,4 +40,5 @@ urlpatterns = [
     path("forgot-password/", ForgotPasswordAPIView.as_view(), name="forgot-password"),
     path("reset-password/", ResetPasswordAPIView.as_view(), name="reset-password"),
     path("change-password/", ChangePasswordAPIView.as_view(), name="change-password"),
+    path("superadmin/dashboard/", SuperAdminDashboardAPIView.as_view(), name="superadmin-dashboard"),
 ]
