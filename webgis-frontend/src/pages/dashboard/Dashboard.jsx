@@ -17,6 +17,9 @@ import {
   ShoppingCart,
 } from "lucide-react";
 
+import Map, { Marker, NavigationControl } from "react-map-gl/maplibre";
+import "maplibre-gl/dist/maplibre-gl.css";
+
 const properties = [
   { id: 1, title: "House for Sale", price: "Rs. 1.2 Cr", location: "Ghorahi-15", type: "House" },
   { id: 2, title: "Commercial Land", price: "Rs. 75 Lakh", location: "Ghorahi-16", type: "Land" },
@@ -106,6 +109,49 @@ export default function Dashboard() {
   );
 }
 
+function MapPanel() {
+  return (
+    <div className="absolute inset-0">
+      <Map
+        initialViewState={{
+          longitude: 84.1240,
+          latitude: 28.3949,
+          zoom: 6.8,
+        }}
+        mapStyle="https://demotiles.maplibre.org/style.json"
+        attributionControl={false}
+        style={{ width: "100%", height: "100%" }}
+      >
+        <NavigationControl position="top-left" />
+
+        {properties.map((property, index) => (
+          <Marker
+            key={property.id}
+            longitude={84 + index * 0.3}
+            latitude={28 + index * 0.2}
+          >
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-red-600 text-white shadow-lg">
+              <MapPin size={16} />
+            </div>
+          </Marker>
+        ))}
+
+        <div className="absolute left-1/2 top-[40%] z-10 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white/95 px-6 py-4 text-center shadow-xl backdrop-blur">
+          <MapPin className="mx-auto mb-2 text-slate-700" size={28} />
+
+          <h2 className="text-lg font-semibold">
+            Nepal WebGIS Dashboard
+          </h2>
+
+          <p className="text-xs text-slate-500">
+            MapLibre GL JS integrated successfully
+          </p>
+        </div>
+      </Map>
+    </div>
+  );
+}
+
 function TopNavbar() {
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b bg-white px-6 shadow-sm">
@@ -179,30 +225,30 @@ function LeftPropertyPanel() {
   );
 }
 
-function MapPanel() {
-  return (
-    <div className="absolute inset-0 bg-slate-200">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-[size:40px_40px]" />
+// function MapPanel() {
+//   return (
+//     <div className="absolute inset-0 bg-slate-200">
+//       <div className="absolute inset-0 bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-[size:40px_40px]" />
 
-      <div className="absolute left-1/2 top-[42%] z-10 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white px-8 py-5 text-center shadow">
-        <MapPin className="mx-auto mb-2 text-slate-700" size={32} />
-        <h2 className="text-sm text-slate-500">Map Panel</h2>
-        <p className="text-[11px] text-slate-500">Leaflet / Cesium map will render here</p>
-      </div>
+//       <div className="absolute left-1/2 top-[42%] z-10 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white px-8 py-5 text-center shadow">
+//         <MapPin className="mx-auto mb-2 text-slate-700" size={32} />
+//         <h2 className="text-sm text-slate-500">Map Panel</h2>
+//         <p className="text-[11px] text-slate-500">Leaflet / Cesium map will render here</p>
+//       </div>
 
-      {properties.map((property, index) => (
-        <div
-          key={property.id}
-          className="absolute z-20 rounded-full bg-red-600 p-2 text-white shadow"
-          style={{ left: `${35 + index * 12}%`, top: `${35 + index * 9}%` }}
-          title={property.title}
-        >
-          <MapPin size={18} />
-        </div>
-      ))}
-    </div>
-  );
-}
+//       {properties.map((property, index) => (
+//         <div
+//           key={property.id}
+//           className="absolute z-20 rounded-full bg-red-600 p-2 text-white shadow"
+//           style={{ left: `${35 + index * 12}%`, top: `${35 + index * 9}%` }}
+//           title={property.title}
+//         >
+//           <MapPin size={18} />
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
 
 function RightLayerPanel({ layers, toggleLayer, removeLayer }) {
   return (
