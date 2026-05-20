@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Routes - GeoDjango Project{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>Routes</h1>
+        <p class="lead">All line-based paths and routes</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Length (m)</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for route in routes %}
+                            <tr>
+                                <td>{{ route.name }}</td>
+                                <td>{{ route.description|truncatewords:10 }}</td>
+                                <td>{{ route.length_meters|floatformat:2 }}</td>
+                                <td>{{ route.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <a href="{% url 'locations:route_detail' route.pk %}" class="btn btn-sm btn-primary">View</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No routes found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ route.name }} - GeoDjango Project{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>{{ route.name }}</h1>
+        <p class="lead">{{ route.description }}</p>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5>Route Details</h5>
+                <p><strong>Length:</strong> {{ route.length_meters|floatformat:2 }} meters</p>
+                <p><strong>Created:</strong> {{ route.created_at|date:"M d, Y H:i" }}</p>
+                {% if route.created_by %}
+                <p><strong>Created by:</strong> {{ route.created_by.username }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>Map</h5>
+                <div id="map" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <a href="{% url 'locations:route_list' %}" class="btn btn-secondary">Back to Routes</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize map
+    var map = L.map('map');
+    
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Add polyline
+    var polyline = L.polyline({{ route.path.coords|safe }}, {color: 'red'})
+        .addTo(map)
+        .bindPopup('{{ route.name }}');
+    
+    // Fit map to polyline
+    map.fitBounds(polyline.getBounds());
+</script>
+{% endblock %}

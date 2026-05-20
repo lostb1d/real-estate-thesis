@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Areas - GeoDjango Project{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>Areas</h1>
+        <p class="lead">All polygon-based geographical areas</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Area (m²)</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for area in areas %}
+                            <tr>
+                                <td>{{ area.name }}</td>
+                                <td>{{ area.description|truncatewords:10 }}</td>
+                                <td>{{ area.area_sq_meters|floatformat:2 }}</td>
+                                <td>{{ area.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <a href="{% url 'locations:area_detail' area.pk %}" class="btn btn-sm btn-primary">View</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No areas found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

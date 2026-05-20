@@ -1,0 +1,20 @@
+# version: '3.8'
+
+services:
+  web:
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=geodjango_project.settings
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+
+  db:
+    ports:
+      - "5437:5432"
+    environment:
+      - POSTGRES_DB=geodjango
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres

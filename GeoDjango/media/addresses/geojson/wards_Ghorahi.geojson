@@ -1,0 +1,74 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "Nepal",
+        "province": "Lumbini Province",
+        "district": "Dang",
+        "municipality": "Ghorahi Sub-Metropolitan City",
+        "ward": "Ward 15",
+        "code": "ward-15"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [83.5200, 28.0400],
+            [83.5300, 28.0400],
+            [83.5300, 28.0500],
+            [83.5200, 28.0500],
+            [83.5200, 28.0400]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "Nepal",
+        "province": "Lumbini Province",
+        "district": "Dang",
+        "municipality": "Ghorahi Sub-Metropolitan City",
+        "ward": "Ward 16",
+        "code": "ward-16"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [83.5300, 28.0400],
+            [83.5400, 28.0400],
+            [83.5400, 28.0500],
+            [83.5300, 28.0500],
+            [83.5300, 28.0400]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "Nepal",
+        "province": "Lumbini Province",
+        "district": "Dang",
+        "municipality": "Ghorahi Sub-Metropolitan City",
+        "ward": "Ward 17",
+        "code": "ward-17"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [83.5400, 28.0400],
+            [83.5500, 28.0400],
+            [83.5500, 28.0500],
+            [83.5400, 28.0500],
+            [83.5400, 28.0400]
+          ]
+        ]
+      }
+    }
+  ]
+}

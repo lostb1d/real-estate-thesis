@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ location.name }} - GeoDjango Project{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>{{ location.name }}</h1>
+        <p class="lead">{{ location.description }}</p>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5>Location Details</h5>
+                <p><strong>Coordinates:</strong> {{ location.point.y|floatformat:6 }}, {{ location.point.x|floatformat:6 }}</p>
+                <p><strong>Created:</strong> {{ location.created_at|date:"M d, Y H:i" }}</p>
+                {% if location.created_by %}
+                <p><strong>Created by:</strong> {{ location.created_by.username }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>Map</h5>
+                <div id="map" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <a href="{% url 'locations:location_list' %}" class="btn btn-secondary">Back to Locations</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize map
+    var map = L.map('map').setView([{{ location.point.y }}, {{ location.point.x }}], 15);
+    
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Add marker
+    L.marker([{{ location.point.y }}, {{ location.point.x }}])
+        .addTo(map)
+        .bindPopup('{{ location.name }}')
+        .openPopup();
+</script>
+{% endblock %}

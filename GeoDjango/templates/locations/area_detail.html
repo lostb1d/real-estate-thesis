@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ area.name }} - GeoDjango Project{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>{{ area.name }}</h1>
+        <p class="lead">{{ area.description }}</p>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5>Area Details</h5>
+                <p><strong>Area:</strong> {{ area.area_sq_meters|floatformat:2 }} m²</p>
+                <p><strong>Created:</strong> {{ area.created_at|date:"M d, Y H:i" }}</p>
+                {% if area.created_by %}
+                <p><strong>Created by:</strong> {{ area.created_by.username }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>Map</h5>
+                <div id="map" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <a href="{% url 'locations:area_list' %}" class="btn btn-secondary">Back to Areas</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize map
+    var map = L.map('map');
+    
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Add polygon
+    var polygon = L.polygon({{ area.polygon.coords|safe }})
+        .addTo(map)
+        .bindPopup('{{ area.name }}');
+    
+    // Fit map to polygon
+    map.fitBounds(polygon.getBounds());
+</script>
+{% endblock %}

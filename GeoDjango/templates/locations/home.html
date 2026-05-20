@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}GeoDjango Project - Home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>Welcome to GeoDjango Project</h1>
+        <p class="lead">A spatial database application built with Django and PostGIS</p>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Locations</h5>
+                <p class="card-text">Point-based geographical locations with coordinates.</p>
+                <p class="text-muted">{{ locations|length }} locations available</p>
+                <a href="{% url 'locations:location_list' %}" class="btn btn-primary">View All</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Areas</h5>
+                <p class="card-text">Polygon-based geographical areas with boundaries.</p>
+                <p class="text-muted">{{ areas|length }} areas available</p>
+                <a href="{% url 'locations:area_list' %}" class="btn btn-primary">View All</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Routes</h5>
+                <p class="card-text">Line-based paths and routes between locations.</p>
+                <p class="text-muted">{{ routes|length }} routes available</p>
+                <a href="{% url 'locations:route_list' %}" class="btn btn-primary">View All</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h3>Quick Map View</h3>
+        <div id="map" style="height: 400px;"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize map
+    var map = L.map('map').setView([40.7128, -74.0060], 10);
+    
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Load locations from API
+    fetch('{% url "locations:locations_geojson" %}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.features && data.features.length > 0) {
+                L.geoJSON(data, {
+                    onEachFeature: function(feature, layer) {
+                        if (feature.properties && feature.properties.name) {
+                            layer.bindPopup(feature.properties.name);
+                        }
+                    }
+                }).addTo(map);
+                
+                // Fit map to markers
+                var group = new L.featureGroup(Object.values(map._layers).filter(layer => layer instanceof L.Marker));
+                if (group.getLayers().length > 0) {
+                    map.fitBounds(group.getBounds().pad(0.1));
+                }
+            }
+        })
+        .catch(error => console.error('Error loading locations:', error));
+</script>
+{% endblock %}
