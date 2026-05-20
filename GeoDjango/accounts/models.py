@@ -5,6 +5,74 @@ from datetime import timedelta
 from django.conf import settings
 import random
 
+class Agency(models.Model):
+    name = models.CharField(max_length=200)
+    registration_no = models.CharField(max_length=100, blank=True, null=True)
+    pan_no = models.CharField(max_length=100, blank=True, null=True)
+
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=30, blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="owned_agencies"
+    )
+
+    is_verified = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
+class AgencyEmployee(models.Model):
+    EMPLOYEE_ROLE_CHOICES = (
+        ("owner", "Owner"),
+        ("manager", "Manager"),
+        ("agent", "Agent"),
+        ("viewer", "Viewer"),
+    )
+
+    agency = models.ForeignKey(
+        Agency,
+        on_delete=models.CASCADE,
+        related_name="employees"
+    )
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="agency_memberships"
+    )
+
+    employee_role = models.CharField(
+        max_length=30,
+        choices=EMPLOYEE_ROLE_CHOICES,
+        default="agent"
+    )
+
+    can_create_ads = models.BooleanField(default=True)
+    can_edit_ads = models.BooleanField(default=True)
+    can_delete_ads = models.BooleanField(default=False)
+    can_manage_employees = models.BooleanField(default=False)
+
+    is_active = models.BooleanField(default=True)
+
+    joined_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ("agency", "user")
+
+    def __str__(self):
+        return f"{self.user.email} - {self.agency.name}"
+
 class PasswordResetOTP(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

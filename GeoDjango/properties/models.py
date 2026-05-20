@@ -89,6 +89,14 @@ class Property(models.Model):
         related_name="properties"
     )
 
+    agency = models.ForeignKey(
+    "accounts.Agency",
+    on_delete=models.SET_NULL,
+    blank=True,
+    null=True,
+    related_name="properties"
+    )
+
     property_type = models.ForeignKey(
         PropertyType,
         on_delete=models.SET_NULL,

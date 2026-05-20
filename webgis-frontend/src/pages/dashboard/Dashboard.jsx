@@ -15,6 +15,7 @@ import {
   Hospital,
   School,
   ShoppingCart,
+  Plus,
 } from "lucide-react";
 
 import Map, { Marker, NavigationControl } from "react-map-gl/maplibre";
@@ -151,27 +152,82 @@ function MapPanel() {
     </div>
   );
 }
-
 function TopNavbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+
+  const firstName =
+    storedUser.username?.split(" ")[0] || "User";
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/login";
+  };
+
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b bg-white px-6 shadow-sm">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b bg-white px-4 shadow-sm">
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white">
-          <Home size={22} />
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white">
+          <Home size={20} />
         </div>
+
         <div>
-          <h1 className="text-base font-semibold">WebGIS Real Estate</h1>
-          <p className="text-[10px] text-slate-500">Spatial Decision Support System</p>
+          <h1 className="text-sm font-semibold">
+            WebGIS Real Estate
+          </h1>
+
+          <p className="text-[10px] text-slate-500">
+            Spatial Decision Support System
+          </p>
         </div>
       </div>
 
-      <button
-        onClick={() => (window.location.href = "/profile")}
-        className="flex items-center gap-2 rounded-full border px-3 py-2 hover:bg-slate-50"
-      >
-        <UserCircle size={28} />
-        <span className="hidden text-sm font-medium md:block">Profile</span>
-      </button>
+      <div className="relative">
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="flex items-center gap-2 rounded-full border px-3 py-2 hover:bg-slate-50"
+        >
+          <UserCircle size={22} />
+
+          <span className="text-xs font-medium">
+            {firstName}
+          </span>
+        </button>
+
+        {menuOpen && (
+          <div className="absolute right-0 top-12 z-50 w-52 overflow-hidden rounded-2xl border bg-white shadow-xl">
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                window.location.href = "/properties/create";
+              }}
+              className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm hover:bg-slate-50"
+            >
+              <Plus size={16} />
+              Create New Ad
+            </button>
+
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                window.location.href = "/profile";
+              }}
+              className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm hover:bg-slate-50"
+            >
+              <UserCircle size={16} />
+              View Profile
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="flex w-full items-center gap-3 border-t px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50"
+            >
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
     </header>
   );
 }

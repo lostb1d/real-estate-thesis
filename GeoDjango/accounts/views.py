@@ -5,6 +5,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
+
 from .models import User, Role, Permission, RolePermission, UserRole
 from .serializers import (
     UserSerializer,
@@ -12,6 +13,15 @@ from .serializers import (
     PermissionSerializer,
     RolePermissionSerializer,
     UserRoleSerializer,
+    RegisterSerializer,
+    LoginSerializer,
+    VerifyOTPSerializer,
+    ResendOTPSerializer,
+    ForgotPasswordSerializer,
+    ResetPasswordSerializer,
+    ChangePasswordSerializer,   
+    AgencySerializer,
+    AgencyEmployeeSerializer,
 )
 from .permissions import HasCustomPermission
 
@@ -21,16 +31,46 @@ from rest_framework.permissions import AllowAny
 
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .serializers import (
-    RegisterSerializer,
-    LoginSerializer,
-    VerifyOTPSerializer,
-    ResendOTPSerializer,
-    ForgotPasswordSerializer,
-    ResetPasswordSerializer,
-    ChangePasswordSerializer,
-)
+# from .serializers import (
+#     RegisterSerializer,
+#     LoginSerializer,
+#     VerifyOTPSerializer,
+#     ResendOTPSerializer,
+#     ForgotPasswordSerializer,
+#     ResetPasswordSerializer,
+#     ChangePasswordSerializer,
+# )
 
+class AgencyViewSet(viewsets.ModelViewSet):
+    serializer_class = AgencySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_staff or user.is_superuser:
+            return Agency.objects.all()
+
+        return Agency.objects.filter(owner=user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class AgencyEmployeeViewSet(viewsets.ModelViewSet):
+    serializer_class = AgencyEmployeeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_staff or user.is_superuser:
+            return AgencyEmployee.objects.all()
+
+        return AgencyEmployee.objects.filter(agency__owner=user)
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 class RegisterAPIView(generics.CreateAPIView):
     permission_classes = [AllowAny]
@@ -182,3 +222,31 @@ class ChangePasswordAPIView(generics.GenericAPIView):
         )
         serializer.is_valid(raise_exception=True)
         return Response({"message": "Password changed successfully."})
+
+
+
+
+# super admin dashboard:
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAdminUser
+from rest_framework.response import Response
+
+from .models import User, Role, Permission
+from properties.models import Property
+from gis_layers.models import SpatialLayer
+
+
+class SuperAdminDashboardAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        return Response({
+            "total_users": User.objects.count(),
+            "active_users": User.objects.filter(is_active=True).count(),
+            "roles": Role.objects.count(),
+            "permissions": Permission.objects.count(),
+            "total_properties": Property.objects.count(),
+            "pending_properties": Property.objects.filter(status="pending").count(),
+            "approved_properties": Property.objects.filter(status="approved").count(),
+            "gis_layers": SpatialLayer.objects.count(),
+        })

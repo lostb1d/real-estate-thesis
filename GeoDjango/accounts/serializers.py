@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Role, Permission, RolePermission, UserRole, PasswordResetOTP
+from .models import Agency, AgencyEmployee, User, Role, Permission, RolePermission, UserRole, PasswordResetOTP
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.conf import settings
@@ -9,6 +9,23 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User, EmailOTP
 
 
+class AgencySerializer(serializers.ModelSerializer):
+    owner_email = serializers.CharField(source="owner.email", read_only=True)
+
+    class Meta:
+        model = Agency
+        fields = "__all__"
+        read_only_fields = ("owner", "is_verified", "created_at", "updated_at")
+
+
+class AgencyEmployeeSerializer(serializers.ModelSerializer):
+    user_email = serializers.CharField(source="user.email", read_only=True)
+    agency_name = serializers.CharField(source="agency.name", read_only=True)
+
+    class Meta:
+        model = AgencyEmployee
+        fields = "__all__"
+        read_only_fields = ("joined_at",)
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
