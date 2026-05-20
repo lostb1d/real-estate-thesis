@@ -15,6 +15,63 @@ from .serializers import (
 )
 from .permissions import HasCustomPermission
 
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+
+from rest_framework.permissions import AllowAny, IsAuthenticated
+
+from .serializers import (
+    RegisterSerializer,
+    LoginSerializer,
+    VerifyOTPSerializer,
+    ResendOTPSerializer,
+    ForgotPasswordSerializer,
+    ResetPasswordSerializer,
+    ChangePasswordSerializer,
+)
+
+
+class RegisterAPIView(generics.CreateAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
+
+
+class LoginAPIView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data)
+
+
+class VerifyOTPAPIView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = VerifyOTPSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response({
+            "message": "Email verified successfully."
+        })
+
+
+class ResendOTPAPIView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = ResendOTPSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response({
+            "message": "OTP sent successfully."
+        })
+
 
 class PermissionViewSet(viewsets.ModelViewSet):
     queryset = Permission.objects.all()
@@ -95,3 +152,33 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response({
             "message": "Role assigned to user successfully."
         })
+    
+class ForgotPasswordAPIView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = ForgotPasswordSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({"message": "Password reset OTP sent successfully."})
+
+class ResetPasswordAPIView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = ResetPasswordSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({"message": "Password reset successfully."})
+    
+class ChangePasswordAPIView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ChangePasswordSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(
+            data=request.data,
+            context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+        return Response({"message": "Password changed successfully."})
