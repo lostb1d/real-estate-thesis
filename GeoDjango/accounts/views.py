@@ -281,3 +281,27 @@ class SuperAdminUserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return User.objects.all().order_by("-id")
+
+from rest_framework import viewsets, permissions, filters
+from .pagination import SuperAdminPagination
+from .models import Agency
+from .serializers import SuperAdminAgencySerializer
+
+
+class SuperAdminAgencyViewSet(viewsets.ModelViewSet):
+    serializer_class = SuperAdminAgencySerializer
+    permission_classes = [permissions.IsAdminUser]
+    pagination_class = SuperAdminPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        "name",
+        "email",
+        "phone",
+        "registration_no",
+        "pan_no",
+        "owner__email",
+        "owner__username",
+    ]
+
+    def get_queryset(self):
+        return Agency.objects.select_related("owner").all().order_by("-id")

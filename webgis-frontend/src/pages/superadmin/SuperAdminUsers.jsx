@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Eye, Pencil, Trash2, ShieldCheck, Search } from "lucide-react";
+import { Eye, Pencil, Trash2, ShieldCheck, Search, CirclePower } from "lucide-react";
 import { getSuperAdminUsers } from "../../services/superAdminService";
 import { getErrorMessage } from "../../utils/errorHandler";
 
@@ -119,7 +119,7 @@ export default function SuperAdminUsers() {
                     <div className="flex gap-1">
                       <ActionButton icon={Eye} label="View" />
                       <ActionButton icon={Pencil} label="Edit" />
-                      <ActionButton icon={ShieldCheck} label="Status" />
+                      <ActionButton icon={CirclePower} label="Status" />
                       <ActionButton icon={Trash2} label="Delete" danger />
                     </div>
                   </td>

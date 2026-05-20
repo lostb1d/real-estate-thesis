@@ -401,3 +401,42 @@ class UserListSerializer(serializers.ModelSerializer):
         if hasattr(obj, "user_roles"):
             return [ur.role.name for ur in obj.user_roles.filter(is_active=True)]
         return []
+
+class SuperAdminAgencySerializer(serializers.ModelSerializer):
+    owner_name = serializers.SerializerMethodField()
+    owner_email = serializers.CharField(source="owner.email", read_only=True)
+    total_employees = serializers.SerializerMethodField()
+    total_properties = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Agency
+        fields = (
+            "id",
+            "name",
+            "registration_no",
+            "pan_no",
+            "email",
+            "phone",
+            "address",
+            "owner",
+            "owner_name",
+            "owner_email",
+            "is_verified",
+            "is_active",
+            "total_employees",
+            "total_properties",
+            "created_at",
+            "updated_at",
+        )
+
+    def get_owner_name(self, obj):
+        if not obj.owner:
+            return "-"
+        full_name = f"{obj.owner.first_name} {obj.owner.last_name}".strip()
+        return full_name or obj.owner.username
+
+    def get_total_employees(self, obj):
+        return obj.employees.count()
+
+    def get_total_properties(self, obj):
+        return obj.properties.count()

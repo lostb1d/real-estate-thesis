@@ -20,3 +20,20 @@ export const getSuperAdminUsers = async ({
 
   return res.data;
 };
+
+
+export const getSuperAdminAgencies = async ({
+  page = 1,
+  pageSize = 10,
+  search = "",
+}) => {
+  const res = await api.get("/accounts/superadmin/agencies/", {
+    params: {
+      page,
+      page_size: pageSize,
+      search,
+    },
+  });
+
+  return res.data;
+};

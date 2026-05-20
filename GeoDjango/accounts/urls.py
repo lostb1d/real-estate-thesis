@@ -17,6 +17,7 @@ from .views import (
     AgencyEmployeeViewSet,
     SuperAdminUserViewSet,
     SuperAdminDashboardAPIView,
+    SuperAdminAgencyViewSet,
 )
 
 router = DefaultRouter()
@@ -30,6 +31,11 @@ router.register(
     "superadmin/users",
     SuperAdminUserViewSet,
     basename="superadmin-users"
+)
+router.register(
+    "superadmin/agencies",
+    SuperAdminAgencyViewSet,
+    basename="superadmin-agencies"
 )
 urlpatterns = [
     path("", include(router.urls)),
