@@ -1,11 +1,112 @@
 from django.contrib import admin
 from .models import User, Role, Permission, RolePermission, UserRole
+from django.contrib.auth.admin import UserAdmin
+
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ("id", "email", "username", "is_active", "is_staff")
-    search_fields = ("email", "username")
+class CustomUserAdmin(UserAdmin):
+    model = User
+
+    list_display = (
+        "id",
+        "email",
+        "username",
+        "first_name",
+        "last_name",
+        "phone",
+        "is_verified",
+        "is_active",
+        "is_staff",
+        "is_superuser",
+        "date_joined",
+    )
+
+    list_filter = (
+        "is_verified",
+        "is_active",
+        "is_staff",
+        "is_superuser",
+        "date_joined",
+    )
+
+    search_fields = (
+        "email",
+        "username",
+        "first_name",
+        "last_name",
+        "phone",
+    )
+
+    ordering = ("-id",)
+
+    readonly_fields = (
+        "last_login",
+        "date_joined",
+    )
+
+    fieldsets = (
+        ("Authentication", {
+            "fields": (
+                "email",
+                "username",
+                "password",
+            )
+        }),
+
+        ("Personal Information", {
+            "fields": (
+                "first_name",
+                "last_name",
+                "phone",
+            )
+        }),
+
+        ("Verification", {
+            "fields": (
+                "is_verified",
+            )
+        }),
+
+        ("Permissions", {
+            "fields": (
+                "is_active",
+                "is_staff",
+                "is_superuser",
+                "groups",
+                "user_permissions",
+            )
+        }),
+
+        ("Important Dates", {
+            "fields": (
+                "last_login",
+                "date_joined",
+            )
+        }),
+    )
+
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "email",
+                    "username",
+                    "first_name",
+                    "last_name",
+                    "phone",
+                    "password1",
+                    "password2",
+                    "is_verified",
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                ),
+            },
+        ),
+    )
 
 
 @admin.register(Permission)

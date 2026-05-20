@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -6,6 +7,11 @@ import {
   Home,
   Layers,
   LogOut,
+  ChevronDown,
+  ChevronRight,
+  FolderTree,
+  Map,
+  Upload,
 } from "lucide-react";
 
 export default function SuperAdminLayout() {
@@ -29,7 +35,28 @@ export default function SuperAdminLayout() {
           <MenuItem to="/superadmin/users" icon={Users} label="Users" />
           <MenuItem to="/superadmin/agencies" icon={Building2} label="Agencies" />
           <MenuItem to="/superadmin/properties" icon={Home} label="Properties" />
-          <MenuItem to="/superadmin/gis-layers" icon={Layers} label="GIS Layers" />
+
+          <ExpandableMenu
+            icon={Layers}
+            label="GIS Layers"
+            items={[
+              {
+                to: "/superadmin/gis-layers/categories",
+                icon: FolderTree,
+                label: "Layer Category",
+              },
+              {
+                to: "/superadmin/gis-layers/layers",
+                icon: Map,
+                label: "Layers",
+              },
+              {
+                to: "/superadmin/gis-layers/uploads",
+                icon: Upload,
+                label: "Layer Uploads",
+              },
+            ]}
+          />
         </nav>
 
         <div className="border-t p-3">
@@ -65,5 +92,38 @@ function MenuItem({ to, icon: Icon, label }) {
       <Icon size={16} />
       {label}
     </NavLink>
+  );
+}
+
+function ExpandableMenu({ icon: Icon, label, items }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-slate-600 hover:bg-slate-100"
+      >
+        <span className="flex items-center gap-2">
+          <Icon size={16} />
+          {label}
+        </span>
+
+        {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+      </button>
+
+      {open && (
+        <div className="ml-4 mt-1 space-y-1 border-l pl-2">
+          {items.map((item) => (
+            <MenuItem
+              key={item.to}
+              to={item.to}
+              icon={item.icon}
+              label={item.label}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
