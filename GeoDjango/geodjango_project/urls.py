@@ -30,6 +30,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/accounts/", include("accounts.urls")),
     path("api/properties/", include("properties.urls")),
+    path("api/gis-layers/", include("gis_layers.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "swagger/",
@@ -41,6 +42,7 @@ urlpatterns = [
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
+    # path("api/gis-layers/", include("gis_layers.urls")),
     # path('', include('locations.urls')),
 ]
 

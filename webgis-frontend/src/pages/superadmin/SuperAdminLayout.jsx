@@ -12,6 +12,10 @@ import {
   FolderTree,
   Map,
   Upload,
+  ListTree,
+  MapPin,
+  Database,
+  Image,
 } from "lucide-react";
 
 export default function SuperAdminLayout() {
@@ -37,26 +41,18 @@ export default function SuperAdminLayout() {
           <MenuItem to="/superadmin/properties" icon={Home} label="Properties" />
 
           <ExpandableMenu
-            icon={Layers}
-            label="GIS Layers"
-            items={[
-              {
-                to: "/superadmin/gis-layers/categories",
-                icon: FolderTree,
-                label: "Layer Category",
-              },
-              {
-                to: "/superadmin/gis-layers/layers",
-                icon: Map,
-                label: "Layers",
-              },
-              {
-                to: "/superadmin/gis-layers/uploads",
-                icon: Upload,
-                label: "Layer Uploads",
-              },
-            ]}
-          />
+  icon={Layers}
+  label="GIS Layers"
+  items={[
+    { to: "/superadmin/gis-layers/categories", icon: FolderTree, label: "Layer Categories" },
+    { to: "/superadmin/gis-layers/layers", icon: Map, label: "Spatial Layers" },
+    { to: "/superadmin/gis-layers/attributes", icon: ListTree, label: "Layer Attributes" },
+    { to: "/superadmin/gis-layers/features", icon: MapPin, label: "Spatial Features" },
+    { to: "/superadmin/gis-layers/attribute-values", icon: Database, label: "Feature Values" },
+    { to: "/superadmin/gis-layers/rasters", icon: Image, label: "Raster Layers" },
+    { to: "/superadmin/gis-layers/uploads", icon: Upload, label: "Layer Uploads" },
+  ]}
+/>
         </nav>
 
         <div className="border-t p-3">

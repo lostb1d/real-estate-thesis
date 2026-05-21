@@ -17,6 +17,17 @@ import SuperAdminUsers from "./pages/superadmin/SuperAdminUsers";
 import SuperAdminAgencies from "./pages/superadmin/SuperAdminAgencies";
 import SuperAdminProperties from "./pages/superadmin/SuperAdminProperties";
 import SuperAdminGISLayers from "./pages/superadmin/SuperAdminGISLayers";
+import LayerCategoriesPage from "./pages/superadmin/gis/LayerCategoriesPage";
+import SpatialLayersPage from "./pages/superadmin/gis/SpatialLayersPage";
+import LayerAttributesPage from "./pages/superadmin/gis/LayerAttributesPage";
+import SpatialFeaturesPage from "./pages/superadmin/gis/SpatialFeaturesPage";
+import FeatureAttributeValuesPage from "./pages/superadmin/gis/FeatureAttributeValuesPage";
+import RasterLayersPage from "./pages/superadmin/gis/RasterLayersPage";
+import LayerUploadsPage from "./pages/superadmin/gis/LayerUploadsPage";
+
+import CategorySpatialLayersPage from "./pages/superadmin/gis/CategorySpatialLayersPage";
+import LayerSpatialFeaturesPage from "./pages/superadmin/gis/LayerSpatialFeaturesPage";
+
 function Dashboard1() {
   return <div className="p-6 text-2xl font-bold">Dashboard</div>;
 }
@@ -43,7 +54,31 @@ export default function App() {
   <Route path="agencies" element={<SuperAdminAgencies />} />
   <Route path="properties" element={<SuperAdminProperties />} />
   <Route path="gis-layers" element={<SuperAdminGISLayers />} />
+  {/* <Route path="/superadmin" element={<SuperAdminLayout />}> */}
+  <Route path="gis-layers/categories" element={<LayerCategoriesPage />} />
+  <Route path="gis-layers/layers" element={<SpatialLayersPage />} />
+  <Route path="gis-layers/attributes" element={<LayerAttributesPage />} />
+  <Route path="gis-layers/features" element={<SpatialFeaturesPage />} />
+  <Route path="gis-layers/attribute-values" element={<FeatureAttributeValuesPage />} />
+  <Route path="gis-layers/rasters" element={<RasterLayersPage />} />
+  <Route path="gis-layers/uploads" element={<LayerUploadsPage />} />
+    <Route
+  path="gis-layers/categories/:categoryId/spatial-layers"
+  element={<CategorySpatialLayersPage />}
+/>
+
+<Route
+  path="gis-layers/layers/:layerId/features"
+  element={<LayerSpatialFeaturesPage />}
+/>
+<Route
+  path="gis-layers/layers/:layerId/features"
+  element={<LayerSpatialFeaturesPage />}
+/>
+
+
 </Route>
+{/* </Route> */}
       </Routes>
 
     </BrowserRouter>
