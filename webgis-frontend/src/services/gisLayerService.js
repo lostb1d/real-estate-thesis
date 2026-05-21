@@ -106,3 +106,7 @@ export const getLayerAttributesByLayer = async (layerId) => {
 
 // export const deleteSpatialFeature = (id) =>
 //   api.delete(`/gis-layers/spatial-features/${id}/`);
+export const getSpatialLayerDetail = async (layerId) => {
+  const res = await api.get(`/gis-layers/spatial-layers/${layerId}/`);
+  return res.data;
+};

@@ -8,7 +8,11 @@ from .models import (
     RasterLayer,
     LayerUpload,
 )
+import json
+from django.contrib.gis.geos import GEOSGeometry
+from rest_framework import serializers
 
+from .models import SpatialFeature
 
 class LayerCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,9 +39,38 @@ class LayerAttributeSerializer(serializers.ModelSerializer):
 class SpatialFeatureSerializer(serializers.ModelSerializer):
     layer_name = serializers.CharField(source="layer.name", read_only=True)
 
+    point = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    line = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    polygon = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    multipolygon = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+
     class Meta:
         model = SpatialFeature
         fields = "__all__"
+        read_only_fields = ("created_by", "created_at", "updated_at")
+
+    def validate_geometry(self, value):
+        if not value:
+            return None
+        return GEOSGeometry(value, srid=4326)
+
+    def create(self, validated_data):
+        for field in ["point", "line", "polygon", "multipolygon"]:
+            if field in validated_data:
+                validated_data[field] = self.validate_geometry(validated_data[field])
+
+        request = self.context.get("request")
+        if request:
+            validated_data["created_by"] = request.user
+
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        for field in ["point", "line", "polygon", "multipolygon"]:
+            if field in validated_data:
+                validated_data[field] = self.validate_geometry(validated_data[field])
+
+        return super().update(instance, validated_data)
 
 
 class FeatureAttributeValueSerializer(serializers.ModelSerializer):
